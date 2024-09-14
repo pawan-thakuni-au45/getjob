@@ -1,5 +1,5 @@
 
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const userSchema=new mongoose.Schema ({
     fullName:{
@@ -13,7 +13,7 @@ const userSchema=new mongoose.Schema ({
     },
     phoneNumber:{
         type:Number,
-        required:true
+         required:true
     },
     password:{
         type:String,
@@ -29,15 +29,12 @@ const userSchema=new mongoose.Schema ({
         skills:[{type:String}],
         resume:{type:String}, //url
         resumeOriginalName:{type:String},
-        company:{type:Mongoose.Schema.Types.ObjectId,ref:'Company'},
+        company:{type:mongoose.Schema.Types.ObjectId,ref:'Company'},
         profilePhoto:{
             type:String,
             default:""
         },
-fullName:{
-        type:String,
-        required:true
-    }
+
 
     },
     
