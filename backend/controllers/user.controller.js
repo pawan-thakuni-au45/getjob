@@ -18,6 +18,7 @@ export const register = async (req, res) => {
 
     }
     const user = await User.findOne({ email })
+    console.log(user)
     if (user) {
       return res.status(400).json({
         message: 'User is already exist with this Email',
@@ -57,6 +58,7 @@ export const login = async (req, res) => {
     }
 
     const user = await User.findOne({ email })
+    // console.log(user)
 
     if (!user) {
       res.status(400).json({
@@ -74,12 +76,13 @@ export const login = async (req, res) => {
     }
 
     //check role is correct or not
-    if (role !== user.role) {
-      res.status(400).json({
-        message: 'Account does not exist with this role',
-        success: false
-      })
-    }
+    // if (role !== user.role) {
+    //   res.status(400).json({
+    //     message: 'Account does not exist with this role',
+    //     success: false
+    //   })
+    // }
+    
 
     const tokenData = {
       userId: user._id
@@ -89,7 +92,7 @@ export const login = async (req, res) => {
 
     return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
       message: `WelCome Back ${user.fullName}`,
-      status: success
+      success:true
     })
 
   } catch (error) {
@@ -101,7 +104,7 @@ export const login = async (req, res) => {
 export const logout =async(req,res)=>{
   try{
 
-     return res.status(200).cookie("token","",{maxAge}).json({
+     return res.status(200).cookie("token","").json({
       message:'logout succesfully ',
       success:true
      })
@@ -114,18 +117,19 @@ export const updateProfile =async(req,res)=>{
   try{
      const {fullName,email,phoneNumber,bio,skills}=req.body
      const file=req.file
-     if (!fullName || !bio|| !email || !phoneNumber || !skills) {
-      return res.status(400).json({
-        message: 'Something is Missing',
-        success: false
-      })
-
+    
 
 //cloudinary  
+    let skillsArray
+    if(skills){
+       skillsArray=skills.split(",")
     }
-    const skillsArray=skills.split(",")
-    const userId=req.id
+    
+    const userId=req.id  //?
+    console.log(userId);
+
     let user=await User.findById(userId)
+    
     if(!user){
       res.status(400).json({
         message: 'user not exist',
@@ -134,11 +138,16 @@ export const updateProfile =async(req,res)=>{
 
     }
 //updating data
-    user.fullName=fullName,
-    user.email=email,
-    user.phoneNumber=phoneNumber,
-    user.profile.bio=bio,
-    user.profile.skills=skillsArray
+if(fullName) user.fullName=fullName
+    if(email) user.email=email
+
+if(phoneNumber) user.phoneNumber=phoneNumber
+
+if(bio)  user.profile.bio=bio
+    
+ if(skills)  user.profile.skills=skillsArray
+   
+    
 
     await user.save() //after updating i will save user new data
 
@@ -158,6 +167,6 @@ export const updateProfile =async(req,res)=>{
      })
 
   }catch(error){
-
+          console.log(error)
   }
 }
