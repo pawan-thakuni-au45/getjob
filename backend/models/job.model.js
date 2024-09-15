@@ -25,6 +25,10 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    experiencelavel:{
+        type:Number,
+        required:true
+    },
     position: {
         type: Number,
         required: true
@@ -37,7 +41,7 @@ const jobSchema = new mongoose.Schema({
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+       
 
     },
     applications: [
@@ -48,4 +52,4 @@ const jobSchema = new mongoose.Schema({
     ]
 })
 
-export default Job = mongoose.model("Job", jobSchema)
+export const Job = mongoose.model("Job", jobSchema)
