@@ -12,7 +12,7 @@ export const applyJob=async(req,res)=>{
         }
         //check if user has already apply for the job
         const regApplication =await Application.findOne()
-        if()
+        
 
     }catch(error){
         console.log(error)

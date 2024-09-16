@@ -1,13 +1,29 @@
 import  {User}  from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
+import {z} from "zod"
 
 export const register = async (req, res) => {
 
-  try {
 
+  try {
+    const requiredBody= z.object({
+      email:z.string().min(3).max(100).email(),
+      fullName:z.string().min(3).max(100),
+      password:z.string().min(3).max(100)
+    })
+    const parseDataWithSuccess =  requiredBody.safeParse(req.body)
+    if(!parseDataWithSuccess.success){
+      return res.status(400).json({
+        message:"wrong format",
+        
+       error:parseDataWithSuccess.error
+      })
+      return 
+    }
 
     const { fullName, password, email, phoneNumber, role } = req.body
+  
     if (!fullName || !password || !email || !phoneNumber || !role) {
       return res.status(400).json({
         message: 'Something is Missing',
@@ -125,7 +141,7 @@ export const updateProfile =async(req,res)=>{
        skillsArray=skills.split(",")
     }
     
-    const userId=req.id  //?
+    const userId=req.id //? is also ,while authenticate 
     console.log(userId);
 
     let user=await User.findById(userId)
