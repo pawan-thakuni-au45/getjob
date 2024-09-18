@@ -51,10 +51,12 @@ const Signup = () => {
             });
             if (res.data.success) {
                 navigate("/login");
+                toast.success(res.data.message);
                
             }
         } catch (error) {
             console.log(error);
+            toast.error(error.response.data.message)
            
         }
     }
@@ -70,7 +72,7 @@ const Signup = () => {
                         <Label>Full Name</Label>
                         <Input
                             type="text"
-                            value={input.fullname}
+                            value={input.fullName}
                             name="fullName"
                             onChange={changeEventHandler}
                             placeholder="patel"
