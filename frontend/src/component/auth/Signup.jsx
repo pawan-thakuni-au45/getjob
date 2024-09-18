@@ -1,133 +1,150 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../shared/Navbar'
-
+import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from '@/components/ui/sonner.jsx'
-
-
+import axios from 'axios'
+import { USER_API_END_POINT } from '@/constant/userRegisterApi'
+import { toast } from 'sonner'
+// import { useDispatch, useSelector } from 'react-redux'
+// import { setLoading } from '@/redux/authSlice'
+// import { Loader2 } from 'lucide-react'
 
 const Signup = () => {
-    const navigae=useNavigate()
-    const [input,setInput]=useState({
-        fullName:"",
-        email:"",
-        password:"",
-        phoneNumber:"",
-        role:"",
-        file:""
 
-    })
+    const [input, setInput] = useState({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        role: "",
+        file: ""
+    });
+   
+    const navigate = useNavigate();
 
-    const changeEventHandler =(e)=>{
-        setInput({...input,[e.target.name]:e.target.value})
+    const changeEventHandler = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
     }
-    const changeFileHandler =(e)=>{
-        setInput({...input,file:e.targe.files?.[0]})
+    const changeFileHandler = (e) => {
+        setInput({ ...input, file: e.target.files?.[0] });
     }
-
-    //api call --asy'nc
-    const submitHandler =async(e)=>{
-        e.preventDefault()
-        const formdata=new FormData()
-        formdata.append("fullName",input.fullName)
-        formdata.append("email",input.email)
-        formdata.append("password",input.password)
-        formdata.append("phoneNumber",input.phoneNumber)
-        formdata.append("role",input.role)
-        if(input.file){
-            formdata.append("file",input.file)
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();    //formdata object
+        formData.append("fullName", input.fullName);
+        formData.append("email", input.email);
+        formData.append("phoneNumber", input.phoneNumber);
+        formData.append("password", input.password);
+        formData.append("role", input.role);
+        if (input.file) {
+            formData.append("file", input.file);
         }
-        
 
-
-    try{
-
-        const res=await axios.post(`${USER_END_POINT}/register`,formdata,{
-            headers:{
-                "Content-type":"multipast/form-data"
-            },
-            withCredentials:true,
-        })
-        if(res.data.success){
-            navigae('/login')
-            toast.success(res.data.message)
+        try {
+            
+            const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+                headers: { 'Content-Type': "multipart/form-data" },
+                withCredentials: true,
+            });
+            if (res.data.success) {
+                navigate("/login");
+               
+            }
+        } catch (error) {
+            console.log(error);
+           
         }
-    }catch(error){
-
     }
-        
 
-    }
+   
     return (
         <div>
-            <Navbar></Navbar>
-            <div className='flex justify-center items-center mx-auto mx-w-7xl'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-400 rounded-md p-4 my-5'>
-                    <h1 className='font-bold text-xl mb-5'>Signup</h1>
+            <Navbar />
+            <div className='flex items-center justify-center max-w-7xl mx-auto'>
+                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
+                    <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
                     <div className='my-2'>
-                        <Label className="my-7">
-                            Full Name
-                        </Label>
-                        <Input type="text" value={input.fullName} name="fullName" onChange={changeEventHandler} placeholder="pawan thakuni"></Input>
-
+                        <Label>Full Name</Label>
+                        <Input
+                            type="text"
+                            value={input.fullname}
+                            name="fullName"
+                            onChange={changeEventHandler}
+                            placeholder="patel"
+                        />
                     </div>
                     <div className='my-2'>
-                        <Label>
-                            Email
-                        </Label>
-                        <Input type="email" value={input.email} name="email" onChange={changeEventHandler} placeholder="pawan@gmail.com"></Input>
-
+                        <Label>Email</Label>
+                        <Input
+                            type="email"
+                            value={input.email}
+                            name="email"
+                            onChange={changeEventHandler}
+                            placeholder="patel@gmail.com"
+                        />
                     </div>
                     <div className='my-2'>
-                        <Label>
-                            Password
-                        </Label>
-                        <Input type="password" value={input.password} name="password" onChange={changeEventHandler} placeholder="pawan@123"></Input>
-
+                        <Label>Phone Number</Label>
+                        <Input
+                            type="text"
+                            value={input.phoneNumber}
+                            name="phoneNumber"
+                            onChange={changeEventHandler}
+                            placeholder="8080808080"
+                        />
                     </div>
                     <div className='my-2'>
-                        <Label>
-                            phoneNumber
-                        </Label>
-                        <Input type="phoneNumber" value={input.phoneNumber} name="phoneNumber" onChange={changeEventHandler} placeholder="pawan thakuni"></Input>
-
+                        <Label>Password</Label>
+                        <Input
+                            type="password"
+                            value={input.password}
+                            name="password"
+                            onChange={changeEventHandler}
+                            placeholder="patel@gmail.com"
+                        />
                     </div>
-
-                    <div className='flex justify-between gap-5'>
-                        <RadioGroup className="flex gap-4 items-center" >
+                    <div className='flex items-center justify-between'>
+                        <RadioGroup className="flex items-center gap-4 my-5">
                             <div className="flex items-center space-x-2">
-                            <input type="radio" name="role" value="student" checked={input.role==="student"} onChange={changeEventHandler} className='cursor-pointer'>
-                            
-                            </input>
-                                
-                                <Label htmlFor="r1">student </Label>
+                                <Input
+                                    type="radio"
+                                    name="role"
+                                    value="student"
+                                    checked={input.role === 'student'}
+                                    onChange={changeEventHandler}
+                                    className="cursor-pointer"
+                                />
+                                <Label htmlFor="r1">Student</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                             
-                             <input type="radio" name="role" value="recruiter" checked={input.role==="recruiter"} onChange={changeEventHandler} className='cursor-pointer'>
-                            
-                             </input>
-                                <Label htmlFor="r2">recruiter</Label>
+                                <Input
+                                    type="radio"
+                                    name="role"
+                                    value="recruiter"
+                                    checked={input.role === 'recruiter'}
+                                    onChange={changeEventHandler}
+                                    className="cursor-pointer"
+                                />
+                                <Label htmlFor="r2">Recruiter</Label>
                             </div>
-                            
                         </RadioGroup>
-                        <div className='flex items-center gap-5'>
-                          <Label>Profile</Label>
-                            <input accept='image/*' type='file' onChange={changeFileHandler} className='cursor-pointer'>
-                          
-                          </input>
+                        <div className='flex items-center gap-2'>
+                            <Label>Profile</Label>
+                            <Input
+                                accept="image/*"
+                                type="file"
+                                onChange={changeFileHandler}
+                                className="cursor-pointer"
+                            />
                         </div>
                     </div>
-                    <Button type="submit" className="w-full border  my-9 text-xl">Signup</Button>
-                    <span>Already have an account ? <Link to="/login" className='text-blue-600'>Login</Link></span>
-
-
-
-
+                
+              <Button type="submit" className="w-full my-4">Signup</Button>
+                
+                    <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
                 </form>
             </div>
         </div>

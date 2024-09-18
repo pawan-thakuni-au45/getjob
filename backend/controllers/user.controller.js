@@ -33,6 +33,7 @@ export const register = async (req, res) => {
 
 
     }
+    
     const user = await User.findOne({ email })
     console.log(user)
     if (user) {
@@ -65,15 +66,15 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, phoneNumber, password } = req.body
-    if (!password || !email || !phoneNumber) {
+    const { email,  password, role } = req.body
+    if (!password || !email  || !role) {
       return res.status(400).json({
         message: 'Something is Missing',
         success: false
       })
     }
 
-    const user = await User.findOne({ email })
+    let user = await User.findOne({ email })
     // console.log(user)
 
     if (!user) {
@@ -92,12 +93,12 @@ export const login = async (req, res) => {
     }
 
     //check role is correct or not
-    // if (role !== user.role) {
-    //   res.status(400).json({
-    //     message: 'Account does not exist with this role',
-    //     success: false
-    //   })
-    // }
+    if (role !== user.role) {
+      res.status(400).json({
+        message: 'Account does not exist with this role',
+        success: false
+      })
+    }
     
 
     const tokenData = {
@@ -106,7 +107,16 @@ export const login = async (req, res) => {
 
     const token = jwt.sign(tokenData, process.env.SECRET_KEY)
 
-    return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
+    user = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile
+  }
+
+    return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
       message: `WelCome Back ${user.fullName}`,
       success:true
     })
