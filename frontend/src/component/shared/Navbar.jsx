@@ -17,10 +17,10 @@ const Navbar = () => {
       </div>
       <div>
       <div className='flex gap-5 '>
-        <ul className='flex gap-5 font-medium my-2'>
-           <li>Home</li>
-           <li>Jobs</li>
-           <li>Browse</li>
+        <ul className='flex gap-5 font-medium my-2 cursor-pointer'>
+           <li><Link to='/'>Home</Link></li>
+           <li><Link to='/jobs'>Jobs</Link></li>
+           <li><Link to='/browse'>Browse</Link></li>
 
         </ul>
         {
