@@ -15,10 +15,14 @@ import axios from 'axios'
 import {USER_API_END_POINT} from '@/constant/userRegisterApi'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import { setUser } from '@/redux/authSlice'
+import { useDispatch } from 'react-redux'
 
 
 
 const Login = () => {
+
+    const dispatch=useDispatch()
 
     const [input,setInput]=useState({
        
@@ -57,6 +61,7 @@ const Login = () => {
            
         }) 
         if(res.data.success){
+            dispatch(setUser(res.data.user))
             navigate("/");
             toast.success(res.data.message);
            
